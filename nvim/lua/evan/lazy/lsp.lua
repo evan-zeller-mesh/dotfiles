@@ -24,9 +24,7 @@ return {
                 vim.api.nvim_create_autocmd("BufWritePre", {
                     buffer = args.buf,
                     callback = function()
-                        if (vim.lsp.get_clients({ bufnr = args.buf })[1].name ~= 'lemminx') then
-                            vim.lsp.buf.format { async = false, id = args.data.client_id }
-                        end
+                        vim.lsp.buf.format { async = false, id = args.data.client_id }
                     end,
                 })
             end
@@ -43,6 +41,6 @@ return {
         vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl = true, sp = "Yellow" })
         vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl = true, sp = "Cyan" })
         vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { undercurl = true, sp = "LightGrey" })
-        vim.lsp.inlay_hint.enable(true)
+        vim.lsp.inlay_hint.enable()
     end
 }

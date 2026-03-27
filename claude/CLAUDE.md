@@ -18,16 +18,26 @@ product demo. Push back when something is wrong — silence is not the same as a
 
 ## Testing
 
-- TDD without exception. Write the failing test first, then make it pass.
-- Tests cover behavior, not implementation details.
+- Write unit tests for complex logic and non-trivial edge cases. Don't test the trivially obvious.
+- Test behavior and outcomes, not implementation details. Tests shouldn't break when you refactor internals without changing behavior.
+- Meet a minimum of 75% test coverage on new code.
 - Don't mock what you can reasonably use the real thing for.
+- jdtls requires jdk 21 so it will always be the default in the shell. Most of my projects require jdk 17 or 11. 
+  Generate a maven wrapper `mvnw` if not present with `mvn wrapper:wrapper` and add a hardcoded `JAVA_HOME=` 
+  inside mvnw with the correct JDK version inside. jdtls requires jdk 21, so 21 will always be the default in the shell.
+- JDK versions will always be managed with sdkman and present in ~/.sdkman/candidates/java
 
 ## Git
 
 - Never use `--no-verify`. If a hook fails, fix the underlying issue.
 - Never force push to main or master.
 - Never commit without being explicitly asked to.
-- Prefer small, focused commits. The message explains *why*, not just what changed.
+- Use conventional commits (https://www.conventionalcommits.org/en/v1.0.0/): `type(scope): description`. Common types: `feat`, `fix`, `refactor`, `test`, `chore`, `docs`. The message body explains *why*, not just what changed.
+
+
+## Shell Commands
+- Never chain commands with `&&` or `;` when each individual command is already allowed by `Bash(git:*)` or similar rules. Use separate parallel Bash tool calls instead — they run concurrently and don't trigger permission prompts.
+
 
 ## Navigation
 

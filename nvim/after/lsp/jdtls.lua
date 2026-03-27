@@ -30,7 +30,7 @@ return {
                     end
                 end
             end
-            vim.lsp.handlers["textDocument/publishDiagnostics"](err, result, ctx, config)
+            vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
         end
     end,
 }
