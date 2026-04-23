@@ -26,13 +26,18 @@ product demo. Push back when something is wrong — silence is not the same as a
   Generate a maven wrapper `mvnw` if not present with `mvn wrapper:wrapper` and add a hardcoded `JAVA_HOME=` 
   inside mvnw with the correct JDK version inside. jdtls requires jdk 21, so 21 will always be the default in the shell.
 - JDK versions will always be managed with sdkman and present in ~/.sdkman/candidates/java
+- DO NOT use reflection in tests to reproduce certain class configurations. If you can't get there
+through regular code interactions because the code is not built to be tested then raise that concern to the user
+to be addressed.
 
 ## Git
 
+- Repositories will typically be checked out as bare. Do not use relative paths where it would interfere with a non-bare clone.
 - Never use `--no-verify`. If a hook fails, fix the underlying issue.
 - Never force push to main or master.
 - Never commit without being explicitly asked to.
 - Use conventional commits (https://www.conventionalcommits.org/en/v1.0.0/): `type(scope): description`. Common types: `feat`, `fix`, `refactor`, `test`, `chore`, `docs`. The message body explains *why*, not just what changed.
+- Use the `git-worktree-add` tool at ~/.local/bin/ for creating worktrees in bare repos. It will create the worktree from origin/main and ensure refs are configured for fetching.
 
 
 ## Shell Commands
