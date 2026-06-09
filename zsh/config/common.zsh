@@ -1,5 +1,19 @@
 # Common zsh config — loaded on all platforms
 
+# History
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=1000000            # commands kept in memory per session
+SAVEHIST=1000000            # commands persisted to $HISTFILE
+
+setopt EXTENDED_HISTORY     # record timestamp + duration for each command
+setopt SHARE_HISTORY        # live-share history across all running shells
+setopt HIST_IGNORE_DUPS     # don't store a command identical to the previous
+setopt HIST_IGNORE_SPACE    # don't store commands prefixed with a space
+setopt HIST_REDUCE_BLANKS   # collapse superfluous whitespace before storing
+setopt HIST_FIND_NO_DUPS    # skip earlier duplicates when searching (fzf, ↑)
+setopt HIST_SAVE_NO_DUPS    # don't write duplicate entries to the file
+setopt HIST_FCNTL_LOCK      # safe concurrent writes from multiple shells
+
 # Aliases
 [[ -f ~/.zsh_aliases ]] && source ~/.zsh_aliases
 
@@ -24,6 +38,7 @@ PROMPT='%{%B%K{green}%}%?%k %{%B%F{green}%}%n@%m:%{%F{blue}%}%4~ %{$reset_color%
 # PATH
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$PATH:$HOME/go/bin"
+export PATH="$PATH:$HOME/.cargo/bin"
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"

@@ -15,7 +15,9 @@ return {
                 "rust_analyzer",
                 "gopls",
                 "docker_language_server",
-                "docker_compose_language_service"
+                "docker_compose_language_service",
+                "vtsls",
+                "eslint"
             },
             -- jdtls is managed by nvim-jdtls (start_or_attach with custom cmd for lombok).
             -- Excluding it here prevents mason-lspconfig's automatic_enable from starting
@@ -32,6 +34,23 @@ return {
         vim.keymap.set("n", "<leader>ds", builtin.lsp_document_symbols, { desc = "Document symbols" })
         vim.keymap.set("n", "<leader>ws", builtin.lsp_workspace_symbols, { desc = "Workspace symbols" })
         vim.keymap.set("n", "ga", vim.lsp.buf.code_action, { desc = "Code actions" })
+
+        vim.api.nvim_create_autocmd("LspAttach", {
+            group = vim.api.nvim_create_augroup("lsp", { clear = true }),
+            callback = function(args)
+                local client = vim.lsp.get_client_by_id(args.data.client_id)
+                -- TS/JS formatting is handled by prettier via conform.nvim
+                if client and (client.name == "vtsls" or client.name == "ts_ls" or client.name == "eslint") then
+                    return
+                end
+                vim.api.nvim_create_autocmd("BufWritePre", {
+                    buffer = args.buf,
+                    callback = function()
+                        vim.lsp.buf.format { async = false, id = args.data.client_id }
+                    end,
+                })
+            end
+        })
         vim.diagnostic.config({
             virtual_text = { severity = { min = vim.diagnostic.severity.WARN } },
             underline = { severity = { min = vim.diagnostic.severity.HINT } },

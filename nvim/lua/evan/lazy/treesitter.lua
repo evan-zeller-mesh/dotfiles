@@ -10,7 +10,10 @@ return {
                 "java",
                 "bash",
                 "go",
-                "typescript"
+                "typescript",
+                "tsx",
+                "javascript",
+                "json"
             })
     end
 }
