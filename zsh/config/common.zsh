@@ -27,13 +27,48 @@ bindkey "^[[F" end-of-line
 # Colors
 export CLICOLOR=1
 
-# Prompt
-autoload -U colors && colors
+# Prompt — single line; directory right-aligned, auto-hides on long commands.
+# Pastel foregrounds from the Rosé Pine "rose" palette (tmux), neutral bg kept.
+_p_red='#ff7979'    # exit code on failure
+_p_green='#93c795'  # user@host (remote) + prompt char (active-window green)
+_p_yellow='#f0e68c' # git branch
+_p_muted='242'      # directory (subtle grey)
+
 autoload -Uz vcs_info
-precmd() { vcs_info }
-zstyle ':vcs_info:git:*' formats '(%b)'
+# Show the exit code only when a real command ran (not on empty Enter spam).
+preexec() { _cmd_ran=1 }
+precmd() {
+  local exit=$?
+  vcs_info
+  if (( ${_cmd_ran:-0} && exit )); then
+    _exit_prompt="%F{$_p_red}${exit} %f"
+  else
+    _exit_prompt=""
+  fi
+  _cmd_ran=0
+}
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' formats "%F{$_p_yellow}(%b)%f"
 setopt PROMPT_SUBST
-PROMPT='%{%B%K{green}%}%?%k %{%B%F{green}%}%n@%m:%{%F{blue}%}%4~ %{$reset_color%}${vcs_info_msg_0_} $ '
+
+# fish-style abbreviation: parent dirs shortened to first letter (~/p/mind)
+_prompt_pwd() {
+  setopt localoptions extendedglob
+  local p="${PWD/#$HOME/~}"
+  if [[ "$p" == (#m)[/~] ]]; then
+    print -rn -- "$MATCH"
+  else
+    print -rn -- "${${${${(@j:/:M)${(@s:/:)p}##.#?}:h}%/}//\%/%%}/${${p:t}//\%/%%}"
+  fi
+}
+
+# bold-green user@host only when remote
+_prompt_host=''
+[[ -n "$SSH_CONNECTION" || -n "$SSH_TTY" ]] && _prompt_host="%B%F{$_p_green}%n@%m%f%b "
+
+# left: [exit code on failure] [user@host if ssh] (branch) $   right: path
+PROMPT='${_exit_prompt}${_prompt_host}${vcs_info_msg_0_:+${vcs_info_msg_0_} }%B%F{'$_p_green'}$%f%b '
+RPROMPT='%F{'$_p_muted'}$(_prompt_pwd)%f'
 
 # PATH
 export PATH="$HOME/.local/bin:$PATH"
