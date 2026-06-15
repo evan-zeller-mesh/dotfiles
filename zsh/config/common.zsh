@@ -32,7 +32,16 @@ export CLICOLOR=1
 _p_red='#ff7979'    # exit code on failure
 _p_green='#93c795'  # user@host (remote) + prompt char (active-window green)
 _p_yellow='#f0e68c' # git branch
+_p_blue='#81c0ff'   # python virtualenv
 _p_muted='242'      # directory (subtle grey)
+
+_g_branch=$'' #  powerline git-branch glyph
+_g_python=$'' #  nerd-font python glyph
+
+# Render the virtualenv ourselves (see DISABLE_PROMPT vars below), so disable
+# venv's own "(name)" prefix to avoid it colliding with the git branch styling.
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 autoload -Uz vcs_info
 # Show the exit code only when a real command ran (not on empty Enter spam).
@@ -45,10 +54,15 @@ precmd() {
   else
     _exit_prompt=""
   fi
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    _py_prompt="%F{$_p_blue}${_g_python} ${${VIRTUAL_ENV:t}//\%/%%}%f "
+  else
+    _py_prompt=""
+  fi
   _cmd_ran=0
 }
 zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:git:*' formats "%F{$_p_yellow}(%b)%f"
+zstyle ':vcs_info:git:*' formats "%F{$_p_yellow}${_g_branch} %b%f"
 setopt PROMPT_SUBST
 
 # fish-style abbreviation: parent dirs shortened to first letter (~/p/mind)
@@ -66,8 +80,8 @@ _prompt_pwd() {
 _prompt_host=''
 [[ -n "$SSH_CONNECTION" || -n "$SSH_TTY" ]] && _prompt_host="%B%F{$_p_green}%n@%m%f%b "
 
-# left: [exit code on failure] [user@host if ssh] (branch) $   right: path
-PROMPT='${_exit_prompt}${_prompt_host}${vcs_info_msg_0_:+${vcs_info_msg_0_} }%B%F{'$_p_green'}$%f%b '
+# left: [exit] [user@host if ssh] [ venv] [ branch] $   right: path
+PROMPT='${_exit_prompt}${_prompt_host}${_py_prompt}${vcs_info_msg_0_:+${vcs_info_msg_0_} }%B%F{'$_p_green'}$%f%b '
 RPROMPT='%F{'$_p_muted'}$(_prompt_pwd)%f'
 
 # PATH
