@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Sets @claude_state (busy/waiting/idle) on this tmux window, which drives
+# the oasis pill-color override in tmux/.tmux.conf. Which hook event (and
+# which Notification sub-type, via its matcher) maps to which state is
+# decided entirely by settings.json's hook wiring — this just applies it.
+set -euo pipefail
+
+[[ -z "${TMUX_PANE:-}" ]] && exit 0
+[[ -n "${1:-}" ]] || exit 0
+
+tmux set-window-option -t "$TMUX_PANE" @claude_state "$1" 2>/dev/null
