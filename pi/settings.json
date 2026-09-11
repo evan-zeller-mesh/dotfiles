@@ -1,0 +1,20 @@
+{
+  "lastChangelogVersion": "0.84.2",
+  "packages": [
+    "npm:pi-llama-server",
+    "npm:pi-statusline",
+    "npm:@aliou/pi-guardrails",
+    "npm:@yeliu84/pi-model-router",
+    "npm:pi-mcp-adapter",
+    "npm:pi-ask-user",
+    "npm:@czottmann/pi-automode"
+  ],
+  "defaultProvider": "router",
+  "defaultModel": "auto",
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline-command-llama.sh"
+  },
+  "theme": "dark",
+  "defaultThinkingLevel": "medium"
+}

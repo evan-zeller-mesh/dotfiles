@@ -1,0 +1,11 @@
+{
+  "classifierModel": "anthropic/claude-haiku-4-5",
+  "maxSessionBudget": 1.0,
+  "profiles": {
+    "auto": {
+      "high": { "model": "openai-codex/gpt-6-astra", "thinking": "high" },
+      "medium": { "model": "anthropic/claude-opus-5", "thinking": "medium" },
+      "low": { "model": "llama-server/Qwen_Qwen3.6-35B-A3B-Q4_K_M.gguf", "thinking": "low" }
+    }
+  }
+}

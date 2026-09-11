@@ -1,0 +1,76 @@
+{
+  "$schema": "https://unpkg.com/@aliou/pi-guardrails@0.17.0/schema.json",
+  "applyBuiltinDefaults": true,
+  "version": "0.17.0",
+  "onboarding": {
+    "completed": true,
+    "completedAt": "2026-08-17T13:49:13.729Z",
+    "version": "0.17.0"
+  },
+  "features": {
+    "policies": true,
+    "permissionGate": false,
+    "pathAccess": false
+  },
+  "policies": {
+    "rules": [
+      {
+        "id": "home-ssh",
+        "description": "SSH directory and keys",
+        "enabled": true,
+        "patterns": [
+          { "pattern": "~/.ssh/**" },
+          { "pattern": "~/.ssh/*_rsa" },
+          { "pattern": "~/.ssh/*_ed25519" },
+          { "pattern": "~/.ssh/*.pem" }
+        ],
+        "allowedPatterns": [{ "pattern": "~/.ssh/*.pub" }],
+        "protection": "noAccess",
+        "onlyIfExists": true,
+        "blockMessage": "Accessing {file} is not allowed. This file is part of your SSH configuration and may contain private keys or sensitive host information."
+      },
+      {
+        "id": "home-config",
+        "description": "Sensitive user configuration directories",
+        "enabled": true,
+        "patterns": [
+          { "pattern": "~/.config/gh/**" },
+          { "pattern": "~/.config/gcloud/**" },
+          { "pattern": "~/.config/op/**" },
+          { "pattern": "~/.config/sops/**" },
+          { "pattern": "~/.aws/**" }
+        ],
+        "protection": "noAccess",
+        "onlyIfExists": true,
+        "blockMessage": "Accessing {file} is not allowed. This file is in a sensitive user configuration directory and may contain credentials or tokens."
+      },
+      {
+        "id": "home-gpg",
+        "description": "GPG keys and configuration",
+        "enabled": true,
+        "patterns": [
+          { "pattern": "~/.gnupg/**" },
+          { "pattern": "~/*.gpg" },
+          { "pattern": "~/.gpg-agent.conf" }
+        ],
+        "protection": "noAccess",
+        "onlyIfExists": true,
+        "blockMessage": "Accessing {file} is not allowed. This file is part of your GPG configuration and may contain private keys or trust settings."
+      },
+      {
+        "id": "agent-credentials",
+        "description": "Coding agent credential and auth stores",
+        "enabled": true,
+        "patterns": [
+          { "pattern": "~/.pi/agent/auth.json" },
+          { "pattern": "~/.pi/agent/models-store.json" },
+          { "pattern": "~/.claude/.credentials.json" },
+          { "pattern": "~/.claude.json" }
+        ],
+        "protection": "noAccess",
+        "onlyIfExists": true,
+        "blockMessage": "Accessing {file} is not allowed. This file holds coding agent provider credentials."
+      }
+    ]
+  }
+}
